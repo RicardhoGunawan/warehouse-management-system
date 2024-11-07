@@ -1,10 +1,19 @@
-<?php 
+<?php
 $page_title = "Tambah Barang"; // Judul halaman 
 ?>
 
 <div class="container">
     <h2><?= htmlspecialchars($page_title); ?></h2>
     <form action="/?controller=barang&action=create" method="POST">
+        <div class="mb-3">
+            <label class="form-label">Kategori</label>
+            <select class="form-select" name="category_id" required>
+                <option value="">Pilih Kategori</option>
+                <?php foreach ($categories as $category): ?>
+                    <option value="<?= $category['id']; ?>"><?= htmlspecialchars($category['category_name']); ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
         <div class="mb-3">
             <label for="nama" class="form-label">Nama Barang</label>
             <input type="text" class="form-control" id="nama" name="nama" required>

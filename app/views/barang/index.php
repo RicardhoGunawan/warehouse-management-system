@@ -16,7 +16,7 @@ $page_title = "Daftar Barang"; // Judul halaman
             <thead>
                 <!-- Baris Pencarian di Dalam Thead -->
                 <tr>
-                    <th colspan="7">
+                    <th colspan="8">
                         <div class="d-flex justify-content-end">
                             <div class="input-group" style="max-width: 250px;">
                                 <input type="text" class="form-control" id="searchInput" placeholder="Cari Barang..."
@@ -27,6 +27,7 @@ $page_title = "Daftar Barang"; // Judul halaman
                 </tr>
 
                 <tr>
+                    <th>Kategori</th>
                     <th>Nama</th>
                     <th>Stok</th>
                     <th>Expire Date</th>
@@ -40,6 +41,7 @@ $page_title = "Daftar Barang"; // Judul halaman
                 <?php if (!empty($barang)): ?>
                     <?php foreach ($barang as $item): ?>
                         <tr>
+                            <td><?= htmlspecialchars($item['category_name']); ?></td>
                             <td><?= htmlspecialchars($item['nama']); ?></td>
                             <td><?= htmlspecialchars($item['stok']); ?></td>
                             <td><?= htmlspecialchars($item['expire_date']); ?></td>

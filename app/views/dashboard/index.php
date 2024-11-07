@@ -2,96 +2,156 @@
 $page_title = "Dashboard"; // Judul halaman
 ?>
 
-<div class="container mt-3">
+<style>
+    .dashboard-container {
+        padding: 20px;
+        background-color: #f7f9fc;
+    }
+
+    .dashboard-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .stat-card {
+        border-left: 5px solid #4CAF50;
+        border-radius: 8px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .dashboard-chart,
+    .stat-card,
+    .table-card {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .dashboard-chart {
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .table-card .card-header {
+        background-color: #ffc107;
+        color: #fff;
+        border-radius: 8px 8px 0 0;
+    }
+
+    .stat-card h6 {
+        font-size: 0.85rem;
+        color: #6c757d;
+    }
+
+    .stat-card h3 {
+        font-weight: bold;
+    }
+
+    .stat-icon {
+        font-size: 2rem;
+        opacity: 0.7;
+    }
+</style>
+
+<div class="container-fluid dashboard-container">
     <h2><?= htmlspecialchars($page_title); ?></h2>
+
     <!-- Stat Cards -->
+    <div class="row mt-3 mb-3">
+        <?php
+        $stats = [
+            ["label" => "Total Barang", "value" => $total_barang, "icon" => "fa-box", "color" => "text-success"],
+            ["label" => "Total Suppliers", "value" => $total_suppliers, "icon" => "fa-dolly", "color" => "text-primary"],
+            ["label" => "Total Lorong", "value" => $total_lorong, "icon" => "fa-road", "color" => "text-warning"],
+            ["label" => "Total Ruangan", "value" => $total_ruangan, "icon" => "fa-warehouse", "color" => "text-danger"],
+        ];
+        ?>
+
+        <?php foreach ($stats as $stat): ?>
+            <div class="col-md-3 mb-3">
+                <div class="card stat-card shadow-sm">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6><?= htmlspecialchars($stat["label"]); ?></h6>
+                            <h3><?= $stat["value"]; ?></h3>
+                        </div>
+                        <div class="<?= $stat["color"]; ?> stat-icon">
+                            <i class="fas <?= $stat["icon"]; ?>"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+
+    <!-- Main Content Row -->
     <div class="row">
-        <div class="col-md-3 mb-3">
-            <div class="card stat-card shadow-sm">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h6 class="text-muted">Total Barang</h6>
-                            <h3 class="mb-0"><?= $total_barang; ?></h3>
-                        </div>
-                        <div class="text-success">
-                            <i class="fas fa-box fa-2x"></i>
-                        </div>
-                    </div>
+        <!-- Barang Mendekati Expire Date (sebelah kiri) -->
+        <div class="col-md-8 mb-4">
+            <div class="card table-card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0">Barang Mendekati Expire Date</h5>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-3">
-            <div class="card stat-card shadow-sm">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h6 class="text-muted">Total Suppliers</h6>
-                            <h3 class="mb-0"><?= $total_suppliers; ?></h3>
-                        </div>
-                        <div class="text-primary">
-                            <i class="fas fa-truck fa-2x"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-3">
-            <div class="card stat-card shadow-sm">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h6 class="text-muted">Total Lorong</h6>
-                            <h3 class="mb-0"><?= $total_lorong; ?></h3>
-                        </div>
-                        <div class="text-warning">
-                            <i class="fas fa-road fa-2x"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-3">
-            <div class="card stat-card shadow-sm">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h6 class="text-muted">Total Ruangan</h6>
-                            <h3 class="mb-0"><?= $total_ruangan; ?></h3>
-                        </div>
-                        <div class="text-danger">
-                            <i class="fas fa-warehouse fa-2x"></i>
-                        </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Nama Barang</th>
+                                    <th>Expire Date</th>
+                                    <th>Jumlah</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php if (!empty($barang_expiring_soon)): ?>
+                                    <?php foreach ($barang_expiring_soon as $item): ?>
+                                        <tr>
+                                            <td><?= htmlspecialchars($item['nama']); ?></td>
+                                            <td><?= htmlspecialchars($item['expire_date']); ?></td>
+                                            <td><?= htmlspecialchars($item['stok']); ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <tr>
+                                        <td colspan="3" class="text-center">Tidak ada barang yang mendekati tanggal
+                                            kadaluarsa.</td>
+                                    </tr>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
 
-        <h3 class="mt-3">Barang yang Mendekati Expire Date</h3>
-        <div class="table-responsive">
-            <table class="table table-vcenter mt-3">
-                <thead>
-                    <tr>
-                        <th>Nama Barang</th>
-                        <th>Expire Date</th>
-                        <th>Jumlah</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (!empty($barang_expiring_soon)): ?>
-                        <?php foreach ($barang_expiring_soon as $item): ?>
-                            <tr>
-                                <td><?= htmlspecialchars($item['nama']); ?></td>
-                                <td><?= htmlspecialchars($item['expire_date']); ?></td>
-                                <td><?= htmlspecialchars($item['stok']); ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="3" class="text-center">Tidak ada barang yang mendekati tanggal kadaluarsa.</td>
-                        </tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
+        <!-- Stok per Kategori (sebelah kanan) -->
+        <div class="col-md-4 mb-4">
+            <div class="dashboard-chart">
+                <h5>Stok per Kategori</h5>
+                <canvas id="stockByCategoryChart"></canvas>
+            </div>
         </div>
     </div>
+</div>
+
+<!-- Chart.js Script -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        new Chart(document.getElementById('stockByCategoryChart'), {
+            type: 'doughnut',
+            data: {
+                labels: <?= json_encode($stock_by_category['labels']) ?>,
+                datasets: [{
+                    data: <?= json_encode($stock_by_category['data']) ?>,
+                    backgroundColor: ['#4CAF50', '#2196F3', '#FFC107', '#9C27B0', '#FF5722']
+                }]
+            }
+        });
+    });
+</script>
