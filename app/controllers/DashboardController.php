@@ -37,15 +37,19 @@ class DashboardController
 
         // Data penggunaan ruangan untuk Chart.js
         $usageData = $this->ruangan->getUsageCount();
+        $roomNamesByUsage = $this->ruangan->getRoomNamesByUsage();
+
         $data['ruangan_usage'] = [
             'labels' => ['Used', 'Unused'],
             'data' => [
                 isset($usageData['used_count']) ? $usageData['used_count'] : 0,
                 isset($usageData['unused_count']) ? $usageData['unused_count'] : 0
-            ]
+            ],
+            'room_names' => $roomNamesByUsage
         ];
-        
-        
+
+
+
 
 
         // Mengubah array menjadi variabel

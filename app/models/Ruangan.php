@@ -47,5 +47,28 @@ class Ruangan {
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    public function getRoomNamesByUsage() {
+        // Mendapatkan nama ruangan berdasarkan status penggunaan
+        $stmt = $this->db->prepare("SELECT nama_ruangan, is_used FROM ruangan");
+        $stmt->execute();
+        $rooms = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $usedRooms = [];
+        $unusedRooms = [];
+
+        foreach ($rooms as $room) {
+            if ($room['is_used']) {
+                $usedRooms[] = $room['nama_ruangan'];
+            } else {
+                $unusedRooms[] = $room['nama_ruangan'];
+            }
+        }
+
+        return [
+            'used' => $usedRooms,
+            'unused' => $unusedRooms
+        ];
+    }
 }
 ?>

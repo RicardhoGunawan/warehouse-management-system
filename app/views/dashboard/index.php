@@ -55,7 +55,18 @@ $page_title = "Dashboard";
 </style>
 
 <div class="container-fluid dashboard-container">
-    <h2><?= htmlspecialchars($page_title); ?></h2>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0"><?= htmlspecialchars($page_title); ?></h2>
+        <div class="btn-group">
+            <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                Pengaturan
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" href="/?controller=login&action=logout">Logout</a></li>
+            </ul>
+        </div>
+    </div>
 
     <!-- Stat Cards -->
     <div class="row mt-3 mb-3">
@@ -161,8 +172,8 @@ $page_title = "Dashboard";
                 datasets: [{
                     data: <?= json_encode($ruangan_usage['data']) ?>,
                     backgroundColor: [
-                        '#2196F3', 
-                        '#E0E0E0' 
+                        '#2196F3',  // Warna untuk "Used"
+                        '#E0E0E0'   // Warna untuk "Unused"
                     ]
                 }]
             },
@@ -171,10 +182,30 @@ $page_title = "Dashboard";
                 plugins: {
                     legend: {
                         position: 'bottom'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                let label = context.label || '';
+                                let roomNames = <?= json_encode($ruangan_usage['room_names']) ?>; // Daftar nama ruangan
+
+                                if (label) {
+                                    label += ': ';
+                                }
+
+                                // Tambahkan daftar ruangan yang digunakan/tidak digunakan dengan baris baru
+                                if (label.includes("Used")) {
+                                    label += "\nRuangan:\n" + roomNames.used.join("\n");
+                                } else if (label.includes("Unused")) {
+                                    label += "\nRuangan:\n" + roomNames.unused.join("\n");
+                                }
+
+                                return label;
+                            }
+                        }
                     }
                 }
             }
         });
-
     });
 </script>
