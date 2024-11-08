@@ -24,7 +24,7 @@ $page_title = "Tambah Barang"; // Judul halaman
         </div>
         <div class="mb-3">
             <label for="expire_date" class="form-label">Tanggal Kedaluwarsa</label>
-            <input type="date" class="form-control" id="expire_date" name="expire_date" required>
+            <input type="date" class="form-control" id="expire_date" name="expire_date">
         </div>
         <div class="mb-3">
             <label for="supplier_id" class="form-label">Supplier</label>

@@ -23,7 +23,13 @@ class RuanganController
     public function create()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->ruangan->create($_POST); // Proses penyimpanan ruangan
+            // Atur nilai default untuk 'is_used' menjadi 0 jika tidak ada dalam POST data
+            $data = [
+                'nama_ruangan' => $_POST['nama_ruangan'],
+                'is_used' => isset($_POST['is_used']) ? $_POST['is_used'] : 0 // Default ke 0 jika kosong
+            ];
+
+            $this->ruangan->create($data); // Proses penyimpanan ruangan
             $_SESSION['success'] = "Ruangan berhasil ditambahkan!";
             header('Location: /?controller=ruangan&action=index'); // Redirect setelah penyimpanan
             exit; // Pastikan keluar setelah redirect
@@ -47,7 +53,12 @@ class RuanganController
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->ruangan->update($id, $_POST); // Proses pembaruan ruangan
+            $data = [
+                'nama_ruangan' => $_POST['nama_ruangan'],
+                'is_used' => isset($_POST['is_used']) ? $_POST['is_used'] : 0 // Default ke 0 jika kosong
+            ];
+
+            $this->ruangan->update($id, $data); // Proses pembaruan ruangan
             $_SESSION['success'] = "Ruangan berhasil diperbarui!";
             header('Location: /?controller=ruangan&action=index'); // Redirect setelah pembaruan
             exit; // Pastikan keluar setelah redirect

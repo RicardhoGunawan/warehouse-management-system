@@ -1,5 +1,5 @@
 <?php
-$page_title = "Dashboard"; // Judul halaman
+$page_title = "Dashboard";
 ?>
 
 <style>
@@ -8,39 +8,17 @@ $page_title = "Dashboard"; // Judul halaman
         background-color: #f7f9fc;
     }
 
-    .dashboard-header {
-        text-align: center;
-        margin-bottom: 30px;
-    }
-
     .stat-card {
         border-left: 5px solid #4CAF50;
         border-radius: 8px;
         transition: transform 0.3s ease, box-shadow 0.3s ease;
+        background-color: #fff;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
 
     .stat-card:hover {
         transform: translateY(-5px);
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-    }
-
-    .dashboard-chart,
-    .stat-card,
-    .table-card {
-        background-color: #fff;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .dashboard-chart {
-        padding: 20px;
-        margin-bottom: 20px;
-    }
-
-    .table-card .card-header {
-        background-color: #ffc107;
-        color: #fff;
-        border-radius: 8px 8px 0 0;
     }
 
     .stat-card h6 {
@@ -55,6 +33,24 @@ $page_title = "Dashboard"; // Judul halaman
     .stat-icon {
         font-size: 2rem;
         opacity: 0.7;
+    }
+
+    .table-card,
+    .dashboard-chart {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .dashboard-chart {
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .table-card .card-header {
+        background-color: #ffc107;
+        color: #fff;
+        border-radius: 8px 8px 0 0;
     }
 </style>
 
@@ -94,7 +90,7 @@ $page_title = "Dashboard"; // Judul halaman
         <!-- Barang Mendekati Expire Date (sebelah kiri) -->
         <div class="col-md-8 mb-4">
             <div class="card table-card shadow-sm">
-                <div class="card-header">
+                <div class="card-header bg-warning text-white">
                     <h5 class="mb-0">Barang Mendekati Expire Date</h5>
                 </div>
                 <div class="card-body">
@@ -129,11 +125,15 @@ $page_title = "Dashboard"; // Judul halaman
             </div>
         </div>
 
-        <!-- Stok per Kategori (sebelah kanan) -->
+        <!-- Grafik Stok per Kategori dan Penggunaan Ruangan -->
         <div class="col-md-4 mb-4">
-            <div class="dashboard-chart">
+            <div class="dashboard-chart mb-4">
                 <h5>Stok per Kategori</h5>
                 <canvas id="stockByCategoryChart"></canvas>
+            </div>
+            <div class="dashboard-chart">
+                <h5>Penggunaan Ruangan</h5>
+                <canvas id="ruanganUsageChart"></canvas>
             </div>
         </div>
     </div>
@@ -151,7 +151,30 @@ $page_title = "Dashboard"; // Judul halaman
                     data: <?= json_encode($stock_by_category['data']) ?>,
                     backgroundColor: ['#4CAF50', '#2196F3', '#FFC107', '#9C27B0', '#FF5722']
                 }]
+            },
+        });
+
+        new Chart(document.getElementById('ruanganUsageChart'), {
+            type: 'doughnut',
+            data: {
+                labels: <?= json_encode($ruangan_usage['labels']) ?>,
+                datasets: [{
+                    data: <?= json_encode($ruangan_usage['data']) ?>,
+                    backgroundColor: [
+                        '#2196F3', 
+                        '#E0E0E0' 
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
             }
         });
+
     });
 </script>

@@ -26,7 +26,6 @@ if (isset($_SESSION['success']) || isset($_SESSION['error'])) {
                 <?= htmlspecialchars($alertMessage) ?>
             </div>
         </div>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 
     <script>

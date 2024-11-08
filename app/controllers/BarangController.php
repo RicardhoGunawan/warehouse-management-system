@@ -21,13 +21,21 @@ class BarangController
 
     public function index()
     {
-        $data['barang'] = $this->barang->getAll(); // Mengambil semua data barang
-        $data['page_title'] = "Daftar Barang"; // Menetapkan judul halaman
-        extract($data); // Mengubah array menjadi variabel lokal
+        $limit = 10; // Jumlah data per halaman
+        $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+        $offset = ($page - 1) * $limit;
 
-        $view = __DIR__ . '/../views/barang/index.php'; // Menetapkan view untuk ditampilkan
-        require __DIR__ . '/../views/layouts/main.php'; // Memuat layout
+        $data['barang'] = $this->barang->getAll($limit, $offset);
+        $totalItems = $this->barang->countAll();
+        $data['totalPages'] = ceil($totalItems / $limit);
+        $data['currentPage'] = $page;
+        $data['page_title'] = "Daftar Barang";
+
+        extract($data);
+        $view = __DIR__ . '/../views/barang/index.php';
+        require __DIR__ . '/../views/layouts/main.php';
     }
+
 
     // Contoh di BarangController.php
     public function create()

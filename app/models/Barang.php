@@ -8,25 +8,35 @@ class Barang
         $this->db = $pdo;
     }
 
-    public function getAll()
+    public function getAll($limit = 10, $offset = 0)
     {
-        // Mengambil semua data barang beserta nama kategori, lorong, supplier, dan ruangan
         $stmt = $this->db->prepare("
-            SELECT 
-                b.*, 
-                l.nama_lorong, 
-                s.nama_supplier AS nama_suppliers, 
-                r.nama_ruangan,
-                c.category_name 
-            FROM barang b
-            LEFT JOIN lorong l ON b.lorong_id = l.id
-            LEFT JOIN suppliers s ON b.supplier_id = s.id
-            LEFT JOIN ruangan r ON b.ruangan_id = r.id
-            LEFT JOIN categories c ON b.category_id = c.id
-        ");
+        SELECT 
+            b.*, 
+            l.nama_lorong, 
+            s.nama_supplier AS nama_suppliers, 
+            r.nama_ruangan,
+            c.category_name 
+        FROM barang b
+        LEFT JOIN lorong l ON b.lorong_id = l.id
+        LEFT JOIN suppliers s ON b.supplier_id = s.id
+        LEFT JOIN ruangan r ON b.ruangan_id = r.id
+        LEFT JOIN categories c ON b.category_id = c.id
+        LIMIT :limit OFFSET :offset
+    ");
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function countAll()
+    {
+        $stmt = $this->db->prepare("SELECT COUNT(*) as total FROM barang");
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+    }
+
     public function getStockByCategory()
     {
         $stmt = $this->db->prepare("
@@ -44,6 +54,12 @@ class Barang
 
     public function create($data)
     {
+        // Jika kategori adalah Food (ID 1), mengisi expire_date
+        $expire_date = null; // Inisialisasi expire_date
+        if (isset($data['category_id']) && $data['category_id'] == '2') {
+            $expire_date = $data['expire_date']; // Mengisi expire_date untuk makanan
+        }
+
         $stmt = $this->db->prepare("
             INSERT INTO barang (nama, stok, expire_date, supplier_id, lorong_id, ruangan_id, category_id) 
             VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -51,7 +67,7 @@ class Barang
         $stmt->execute([
             $data['nama'],
             $data['stok'],
-            $data['expire_date'],
+            $expire_date,  // Hanya mengisi jika kategori adalah Food
             $data['supplier_id'],
             $data['lorong_id'],
             $data['ruangan_id'],
@@ -61,6 +77,12 @@ class Barang
 
     public function update($id, $data)
     {
+        // Jika kategori adalah Food (ID 1), mengisi expire_date
+        $expire_date = null; // Inisialisasi expire_date
+        if (isset($data['category_id']) && $data['category_id'] == '2') {
+            $expire_date = $data['expire_date']; // Mengisi expire_date untuk makanan
+        }
+
         $stmt = $this->db->prepare("
             UPDATE barang 
             SET 
@@ -73,17 +95,19 @@ class Barang
                 category_id = ? 
             WHERE id = ?
         ");
+
         $stmt->execute([
             $data['nama'],
             $data['stok'],
-            $data['expire_date'],
+            $expire_date,  // Hanya mengisi jika kategori adalah Food
             $data['supplier_id'],
             $data['lorong_id'],
             $data['ruangan_id'],
             $data['category_id'],
-            $id
+            $id  // ID yang diupdate
         ]);
     }
+
 
     public function find($id)
     {

@@ -71,6 +71,28 @@ $page_title = "Daftar Barang"; // Judul halaman
             </tbody>
         </table>
     </div>
+    <!-- Navigasi Pagination -->
+    <nav>
+        <ul class="pagination justify-content-center mt-3">
+            <?php if ($currentPage > 1): ?>
+                <li class="page-item">
+                    <a class="page-link" href="?controller=barang&action=index&page=<?= $currentPage - 1; ?>">Sebelumnya</a>
+                </li>
+            <?php endif; ?>
+
+            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                <li class="page-item <?= $i == $currentPage ? 'active' : ''; ?>">
+                    <a class="page-link" href="?controller=barang&action=index&page=<?= $i; ?>"><?= $i; ?></a>
+                </li>
+            <?php endfor; ?>
+
+            <?php if ($currentPage < $totalPages): ?>
+                <li class="page-item">
+                    <a class="page-link" href="?controller=barang&action=index&page=<?= $currentPage + 1; ?>">Berikutnya</a>
+                </li>
+            <?php endif; ?>
+        </ul>
+    </nav>
 </div>
 
 <script>

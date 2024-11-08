@@ -29,7 +29,7 @@ $page_title = "Edit Barang"; // Judul halaman
         <div class="mb-3">
             <label for="expire_date" class="form-label">Tanggal Kedaluwarsa</label>
             <input type="date" class="form-control" id="expire_date" name="expire_date"
-                value="<?= htmlspecialchars($data['barang']['expire_date']); ?>" required>
+                value="<?= htmlspecialchars($data['barang']['expire_date']); ?>">
         </div>
         <div class="mb-3">
             <label for="supplier_id" class="form-label">Supplier</label>

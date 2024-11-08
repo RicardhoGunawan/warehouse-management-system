@@ -15,14 +15,14 @@ class Ruangan {
 
     public function create($data) {
         // Menyimpan ruangan baru ke dalam database
-        $stmt = $this->db->prepare("INSERT INTO ruangan (nama_ruangan) VALUES (?)");
-        $stmt->execute([$data['nama_ruangan']]);
+        $stmt = $this->db->prepare("INSERT INTO ruangan (nama_ruangan, is_used) VALUES (?, ?)");
+        $stmt->execute([$data['nama_ruangan'], $data['is_used']]);
     }
 
     public function update($id, $data) {
         // Memperbarui data ruangan di database
-        $stmt = $this->db->prepare("UPDATE ruangan SET nama_ruangan = ? WHERE id = ?");
-        $stmt->execute([$data['nama_ruangan'], $id]);
+        $stmt = $this->db->prepare("UPDATE ruangan SET nama_ruangan = ?, is_used = ? WHERE id = ?");
+        $stmt->execute([$data['nama_ruangan'], $data['is_used'], $id]);
     }
 
     public function delete($id) {
@@ -35,6 +35,16 @@ class Ruangan {
         // Mengambil ruangan berdasarkan ID
         $stmt = $this->db->prepare("SELECT * FROM ruangan WHERE id = ?");
         $stmt->execute([$id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getUsageCount() {
+        // Menghitung jumlah ruangan yang digunakan dan yang tidak digunakan
+        $stmt = $this->db->prepare("SELECT 
+                                        SUM(is_used = 1) AS used_count, 
+                                        SUM(is_used = 0) AS unused_count 
+                                    FROM ruangan");
+        $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 }
